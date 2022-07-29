@@ -12,6 +12,7 @@ const secondsEl = document.querySelector('[data-seconds]');
 
 const today = new Date();
 let selectedDay = null;
+let timerId = null;
 
 flatpickr(dateInput, {
   enableTime: true,
@@ -32,19 +33,21 @@ flatpickr(dateInput, {
 
 startButton.addEventListener('click', onStartTimer);
 
-function timer() {
-  const today = new Date();
-  let deltaTime = selectedDay - today;
-  const { days, hours, minutes, seconds } = convertMs(deltaTime);
-
-  daysEl.textContent = days < 10 ? `0${days}` : days;
-  hoursEl.textContent = hours < 10 ? `0${hours}` : hours;
-  minutesEl.textContent = minutes < 10 ? `0${minutes}` : minutes;
-  secondsEl.textContent = seconds < 10 ? `0${seconds}` : seconds;
-}
-
 function onStartTimer() {
-  setInterval(timer, 1000);
+  startButton.setAttribute('disabled', 'disabled');
+
+  timerId = setInterval(() => {
+    const today = new Date();
+    let deltaTime = selectedDay - today;
+    const { days, hours, minutes, seconds } = convertMs(deltaTime);
+
+    daysEl.textContent = days < 10 ? `0${days}` : days;
+    hoursEl.textContent = hours < 10 ? `0${hours}` : hours;
+    minutesEl.textContent = minutes < 10 ? `0${minutes}` : minutes;
+    secondsEl.textContent = seconds < 10 ? `0${seconds}` : seconds;
+
+    if (deltaTime < 1000) clearInterval(timerId);
+  }, 1000);
 }
 
 function convertMs(ms) {
