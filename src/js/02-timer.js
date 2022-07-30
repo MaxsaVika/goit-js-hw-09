@@ -14,11 +14,12 @@ const today = new Date();
 let selectedDay = null;
 let timerId = null;
 
-flatpickr(dateInput, {
+const fp = flatpickr(dateInput, {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
+  enableSeconds: true,
   onClose(selectedDates) {
     if (selectedDates[0] > today) {
       startButton.removeAttribute('disabled');
@@ -35,6 +36,7 @@ startButton.addEventListener('click', onStartTimer);
 
 function onStartTimer() {
   startButton.setAttribute('disabled', 'disabled');
+  dateInput.setAttribute('disabled', 'disabled');
 
   timerId = setInterval(() => {
     const today = new Date();
@@ -46,7 +48,10 @@ function onStartTimer() {
     minutesEl.textContent = minutes < 10 ? `0${minutes}` : minutes;
     secondsEl.textContent = seconds < 10 ? `0${seconds}` : seconds;
 
-    if (deltaTime < 1000) clearInterval(timerId);
+    if (deltaTime < 1000) {
+      clearInterval(timerId);
+      dateInput.removeAttribute('disabled');
+    }
   }, 1000);
 }
 
